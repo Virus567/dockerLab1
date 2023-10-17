@@ -1,0 +1,40 @@
+version: "3.4"
+services:
+  test-container:
+    restart: unless-stopped
+    build:
+      context: .
+    environment:
+      PORT: 1234
+      URL: db
+      USER: root
+      DATABASE: test_db
+      PASSWORD: root
+      PORTDB: 5432
+    ports:
+      - "3000:1234"
+    depends_on:
+      - db
+    volumes:
+      - D:/logs:/app/logs
+  db:
+    image: postgres:alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: test_db
+    ports:
+      - 5000:5432
+    volumes:
+      - D:/docker:/var/lib/postgresql/data
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - 80:80
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@example.com
+      - PGADMIN_DEFAULT_PASSWORD=password
